@@ -26,6 +26,8 @@ jobs:
           rm -rf my_www_folder/my_www_folder my_www_folder/.github
           
           npm install -g cordova
+          
+          # 🚨 BADLEIN: "Musicplayer" ki jagah apna pasandida App Name likhein
           cordova create cleanapp com.pure.app "MyAppName"
           
           cd cleanapp
@@ -34,6 +36,12 @@ jobs:
           
           if [ ! -f www/index.html ]; then
             echo '<html><body><h1>App Loaded</h1></body></html>' > www/index.html
+          fi
+          
+          # Custom Logo Setup
+          if [ -f ../icon.png ]; then
+            cp ../icon.png www/icon.png
+            sed -i '/<\/widget>/i \    <icon src="www/icon.png" \/>' config.xml
           fi
           
           cordova platform add android
