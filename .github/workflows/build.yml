@@ -1,0 +1,29 @@
+name: Generate Clean APK
+on: [push, workflow_dispatch]
+
+jobs:
+  android-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build APK without Watermark
+        run: |
+          npm install @capacitor/core @capacitor/cli
+          npx cap init "MyAwesomeApp" "com.mycleanapp.view" --web-dir=.
+          npm install @capacitor/android
+          npx cap add android
+          npx cap sync
+          cd android && ./gradlew assembleDebug
+
+      - name: Save APK File
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pure-Clean-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
